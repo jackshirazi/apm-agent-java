@@ -154,7 +154,7 @@ public class Message implements Recyclable {
     }
 
     @Override
-    public void resetState() {
+    public synchronized void resetState() {
         queueName = null;
         headers.resetState();
         age = -1L;
@@ -165,7 +165,7 @@ public class Message implements Recyclable {
         routingKey = null;
     }
 
-    public void copyFrom(Message other) {
+    public synchronized void copyFrom(Message other) {
         resetState();
         this.queueName = other.getQueueName();
         if (other.body != null) {

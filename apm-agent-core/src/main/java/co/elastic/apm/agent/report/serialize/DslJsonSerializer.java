@@ -898,32 +898,34 @@ public class DslJsonSerializer implements PayloadSerializer {
     }
 
     private void serializeMessageContext(final Message message) {
-        if (message.hasContent()) {
-            writeFieldName("message");
-            jw.writeByte(OBJECT_START);
-            StringBuilder body = message.getBodyForRead();
-            if (body != null && body.length() > 0) {
-                writeLongStringField("body", message.getBodyForWrite());
-            }
-            serializeMessageHeaders(message.getHeaders());
-            int messageAge = (int) message.getAge();
-            if (messageAge >= 0) {
-                writeFieldName("age");
+        synchronized (message) {
+            if (message.hasContent()) {
+                writeFieldName("message");
                 jw.writeByte(OBJECT_START);
-                writeLastField("ms", messageAge);
+                StringBuilder body = message.getBodyForRead();
+                if (body != null && body.length() > 0) {
+                    writeLongStringField("body", message.getBodyForWrite());
+                }
+                serializeMessageHeaders(message.getHeaders());
+                int messageAge = (int) message.getAge();
+                if (messageAge >= 0) {
+                    writeFieldName("age");
+                    jw.writeByte(OBJECT_START);
+                    writeLastField("ms", messageAge);
+                    jw.writeByte(OBJECT_END);
+                    jw.writeByte(COMMA);
+                }
+                if (message.getRoutingKey() != null && !message.getRoutingKey().isEmpty()) {
+                    writeField("routing_key", message.getRoutingKey());
+                }
+                writeFieldName("queue");
+                jw.writeByte(OBJECT_START);
+                writeLastField("name", message.getQueueName());
+                jw.writeByte(OBJECT_END);
+
                 jw.writeByte(OBJECT_END);
                 jw.writeByte(COMMA);
             }
-            if (message.getRoutingKey() != null && !message.getRoutingKey().isEmpty()) {
-                writeField("routing_key", message.getRoutingKey());
-            }
-            writeFieldName("queue");
-            jw.writeByte(OBJECT_START);
-            writeLastField("name", message.getQueueName());
-            jw.writeByte(OBJECT_END);
-
-            jw.writeByte(OBJECT_END);
-            jw.writeByte(COMMA);
         }
     }
 
