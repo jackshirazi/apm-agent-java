@@ -19,6 +19,7 @@
         <module>application-server-integration-tests</module>
         <module>spring-boot-1-5</module>
         <module>spring-boot-2</module>
+        <module>spring-boot-2-6-2</module>
         <module>soap-test</module>
         <module>cdi-app</module>
         <module>cdi-jakartaee-app</module>
