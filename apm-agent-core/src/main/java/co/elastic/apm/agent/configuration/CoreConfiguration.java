@@ -379,6 +379,14 @@ public class CoreConfiguration extends ConfigurationOptionProvider {
         .description("When enabled, configures Byte Buddy to use a type pool cache.")
         .buildWithDefault(true);
 
+    private final ConfigurationOption<Boolean> warmupByteBuddy = ConfigurationOption.booleanOption()
+        .key("warmup_byte_buddy")
+        .configurationCategory(CORE_CATEGORY)
+        .tags("internal")
+        .description("When set to true, configures Byte Buddy to warmup instrumentation processes on the \n" +
+            "attaching thread just before installing the transformer on the JVM Instrumentation.")
+        .buildWithDefault(true);
+
     private final ConfigurationOption<String> bytecodeDumpPath = ConfigurationOption.stringOption()
         .key("bytecode_dump_path")
         .configurationCategory(CORE_CATEGORY)
@@ -587,7 +595,7 @@ public class CoreConfiguration extends ConfigurationOptionProvider {
         .key("use_elastic_traceparent_header")
         .tags("added[1.14.0]")
         .configurationCategory(CORE_CATEGORY)
-        .description("To enable {apm-overview-ref-v}/distributed-tracing.html[distributed tracing], the agent\n" +
+        .description("To enable {apm-guide-ref}/apm-distributed-tracing.html[distributed tracing], the agent\n" +
             "adds trace context headers to outgoing requests (like HTTP requests, Kafka records, gRPC requests etc.).\n" +
             "These headers (`traceparent` and `tracestate`) are defined in the\n" +
             "https://www.w3.org/TR/trace-context-1/[W3C Trace Context] specification.\n" +
@@ -774,6 +782,10 @@ public class CoreConfiguration extends ConfigurationOptionProvider {
 
     public boolean isTypePoolCacheEnabled() {
         return typePoolCache.get();
+    }
+
+    public boolean shouldWarmupByteBuddy() {
+        return warmupByteBuddy.get();
     }
 
     @Nullable
