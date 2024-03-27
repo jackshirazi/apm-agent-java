@@ -23,9 +23,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JakartaTestDAO {
-
+    static Logger LOG = Logger.getLogger("JakartaTestDAO");
     private static final JakartaTestDAO INSTANCE = new JakartaTestDAO();
 
     private Connection connection;
@@ -50,6 +52,7 @@ public class JakartaTestDAO {
     public String queryDb(boolean fail) throws SQLException {
         Statement statement = connection.createStatement();
         String query = String.format("SELECT * FROM ELASTIC_APM WHERE %s=1", fail ? "NON_EXISTING_COLUMN" : "FOO");
+        LOG.log(Level.INFO, query);
         ResultSet resultSet = statement.executeQuery(query);
         resultSet.next();
         return resultSet.getString("bar");
